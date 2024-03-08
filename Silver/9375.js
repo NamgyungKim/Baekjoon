@@ -32,60 +32,29 @@ rl.on("line", function (line) {
         testCase[caseNum].push(input)
     }
 }).on("close", function () {
-    solution()
+    console.log(solution().join('\n'))
     process.exit(); // 프로세스 종료
 });
 
 
 function solution() {
-    let result = []
-    testCase.forEach((aCase) => {
-        if (aCase.length === 0) {
-            result.push(0)
-            return
-        }
-        let arr = makeArr(aCase)
-        result.push(numOfCase(arr))
+    return testCase.map((test) => {
+        let result = 1
+        let caseNum = 0;
+        let obj = {}
+        test.forEach(([clothe, type]) => {
+            if (obj[type]) {
+                obj[type].push(clothe)
+            } else {
+                obj[type] = [clothe]
+            }
+        })
+
+        Object.values(obj).forEach((clothes) => {
+            result = result * (clothes.length + 1)
+        })
+
+        return result - 1
     })
-    console.log(result.join('\n'))
-}
-
-function numOfCase(caseArr) {
-    let result = 0
-
-    const callback = (x, memo) => {
-        if (x === caseArr[0].length) {
-            result++
-            return
-        }
-        callback(x + 1, memo)
-        for (let y = 0; y < caseArr.length; y++) {
-            if (caseArr[y][x] === 'x') continue
-            if (memo[y + 1]) continue
-            callback(x + 1, {...memo, [y + 1]: x + 1})
-        }
-    }
-
-    callback(0, {})
-    return result - 1
-}
-
-function makeArr(arr) {
-    let clothes = new Map()
-    let types = new Map()
-    arr.forEach(([type, aClothes]) => {
-        if (typeof types.get(type) === 'undefined') {
-            types.set(type, types.size)
-        }
-        if (typeof clothes.get(aClothes) === 'undefined') {
-            clothes.set(aClothes, clothes.size)
-        }
-    })
-
-    let result = Array.from({length: types.size}, () => Array.from({length: clothes.size}, () => 'x')); // [0,0,0,0,0]
-    arr.forEach(([type, aClothes]) => {
-        result[types.get(type)][clothes.get(aClothes)] = 0
-    })
-    return result
 }
 
