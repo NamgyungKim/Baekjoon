@@ -30,12 +30,29 @@ rl.on("line", function (line) {
 });
 
 function solution() {
-
+    const countBinary = binaryOneNum()
+    for (let i = 1; i < stNum; i++) {
+        countBinary.next()
+    }
+    for (let i = stNum; i <= edNum; i++) {
+        const a = countBinary.next()
+        // console.log(a.value)
+        result += a.value
+    }
 }
 
-function binaryOneNum(num, depth) {
-    const patton = [1, 2, 2, 3]
 
-    binaryOneNum()
+function* binaryOneNum() {
+    const memo = [1]
+    let pushMemo = []
+    while (true) {
+        for (let num of memo) {
+            yield num
+            pushMemo.push(num + 1)
+        }
+        memo.concat(pushMemo)
+        pushMemo = []
+    }
 }
 
+a
